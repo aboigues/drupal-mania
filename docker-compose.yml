@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Service PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: drupal-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-drupal}
+      POSTGRES_USER: ${POSTGRES_USER:-drupal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-drupal}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - drupal-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-drupal}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Service Drupal
+  drupal:
+    image: drupal:10-apache
+    container_name: drupal-app
+    restart: unless-stopped
+    ports:
+      - "${DRUPAL_PORT:-8080}:80"
+    environment:
+      # Configuration de la base de données
+      POSTGRES_DB: ${POSTGRES_DB:-drupal}
+      POSTGRES_USER: ${POSTGRES_USER:-drupal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-drupal}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    volumes:
+      - ./data/drupal/modules:/opt/drupal/web/modules/custom
+      - ./data/drupal/themes:/opt/drupal/web/themes/custom
+      - ./data/drupal/sites:/opt/drupal/web/sites
+      - ./data/drupal/profiles:/opt/drupal/web/profiles
+    networks:
+      - drupal-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+networks:
+  drupal-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  drupal-data:

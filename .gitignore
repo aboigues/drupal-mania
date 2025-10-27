@@ -44,3 +44,7 @@ temp/
 
 # OS
 Thumbs.db
+
+# Docker data
+data/postgres/
+data/drupal/
