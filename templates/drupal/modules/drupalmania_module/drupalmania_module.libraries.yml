@@ -1,0 +1,10 @@
+drupalmania-library:
+  version: 1.0
+  css:
+    theme:
+      css/drupalmania.css: {}
+  js:
+    js/drupalmania.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

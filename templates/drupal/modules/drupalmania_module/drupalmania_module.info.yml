@@ -1,0 +1,9 @@
+name: Drupal Mania Module
+type: module
+description: 'Module personnalisé pour Drupal Mania avec des fonctionnalités de base'
+package: Custom
+core_version_requirement: ^10
+dependencies:
+  - drupal:node
+  - drupal:user
+  - drupal:block

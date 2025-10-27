@@ -1,0 +1,87 @@
+{#
+/**
+ * @file
+ * Template pour les pages
+ *
+ * Variables disponibles:
+ * - page: Tableau contenant toutes les régions de la page
+ * - site_name: Nom du site
+ * - site_slogan: Slogan du site
+ */
+#}
+<div class="layout-container">
+
+  <header role="banner">
+    <div class="header-inner">
+      {% if page.header %}
+        {{ page.header }}
+      {% endif %}
+
+      <div class="site-branding">
+        {% if site_name %}
+          <h1 class="site-name">
+            <a href="{{ path('<front>') }}" title="{{ 'Home'|t }}" rel="home">
+              {{ site_name }}
+            </a>
+          </h1>
+        {% endif %}
+
+        {% if site_slogan %}
+          <div class="site-slogan">{{ site_slogan }}</div>
+        {% endif %}
+      </div>
+
+      {% if page.primary_menu %}
+        <nav class="primary-menu" role="navigation">
+          {{ page.primary_menu }}
+        </nav>
+      {% endif %}
+
+      {% if page.secondary_menu %}
+        <nav class="secondary-menu" role="navigation">
+          {{ page.secondary_menu }}
+        </nav>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if page.breadcrumb %}
+    <div class="breadcrumb-wrapper">
+      {{ page.breadcrumb }}
+    </div>
+  {% endif %}
+
+  <div class="main-wrapper">
+    {% if page.sidebar_first %}
+      <aside class="sidebar-first" role="complementary">
+        {{ page.sidebar_first }}
+      </aside>
+    {% endif %}
+
+    <main role="main" class="main-content">
+      <a id="main-content" tabindex="-1"></a>
+
+      {% if page.content %}
+        {{ page.content }}
+      {% endif %}
+    </main>
+
+    {% if page.sidebar_second %}
+      <aside class="sidebar-second" role="complementary">
+        {{ page.sidebar_second }}
+      </aside>
+    {% endif %}
+  </div>
+
+  {% if page.footer %}
+    <footer role="contentinfo">
+      <div class="footer-inner">
+        {{ page.footer }}
+        <div class="footer-copyright">
+          <p>&copy; {{ "now"|date("Y") }} {{ site_name }}. {{ 'All rights reserved.'|t }}</p>
+        </div>
+      </div>
+    </footer>
+  {% endif %}
+
+</div>

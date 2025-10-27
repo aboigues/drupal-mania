@@ -1,0 +1,23 @@
+drupalmania_module.hello:
+  path: '/drupalmania/hello'
+  defaults:
+    _controller: '\Drupal\drupalmania_module\Controller\DrupalManiaController::hello'
+    _title: 'Hello Drupal Mania'
+  requirements:
+    _permission: 'access content'
+
+drupalmania_module.dashboard:
+  path: '/drupalmania/dashboard'
+  defaults:
+    _controller: '\Drupal\drupalmania_module\Controller\DrupalManiaController::dashboard'
+    _title: 'Dashboard'
+  requirements:
+    _permission: 'access drupalmania dashboard'
+
+drupalmania_module.settings:
+  path: '/admin/config/drupalmania'
+  defaults:
+    _form: '\Drupal\drupalmania_module\Form\SettingsForm'
+    _title: 'Drupal Mania Settings'
+  requirements:
+    _permission: 'administer site configuration'
