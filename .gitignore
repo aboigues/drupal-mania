@@ -1,0 +1,46 @@
+# IDE et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Données sensibles
+*.env
+.env.local
+secrets/
+*.key
+*.pem
+
+# Logs
+*.log
+logs/
+
+# Temporaires
+*.tmp
+*.bak
+.cache/
+temp/
+
+# OS
+Thumbs.db
