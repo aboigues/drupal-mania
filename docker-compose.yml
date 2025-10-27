@@ -23,7 +23,7 @@ services:
       driver: fluentd
       options:
         fluentd-address: fluentd:24224
-        fluentd-async-connect: "true"
+        fluentd-async: "true"
         tag: postgres
     depends_on:
       fluentd:
@@ -63,7 +63,7 @@ services:
       driver: fluentd
       options:
         fluentd-address: fluentd:24224
-        fluentd-async-connect: "true"
+        fluentd-async: "true"
         tag: drupal
 
   # Service Elasticsearch
