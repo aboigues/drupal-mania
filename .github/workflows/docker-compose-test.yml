@@ -29,6 +29,7 @@ jobs:
       - name: Create required directories
         run: |
           mkdir -p data/postgres
+          mkdir -p data/elasticsearch
           mkdir -p data/drupal/modules
           mkdir -p data/drupal/themes
           mkdir -p data/drupal/sites
@@ -66,6 +67,26 @@ jobs:
 
           echo "❌ PostgreSQL health check timeout"
           docker compose logs postgres
+          exit 1
+
+      - name: Wait for Elasticsearch to be healthy
+        run: |
+          echo "⏳ Waiting for Elasticsearch to be ready..."
+          timeout=120
+          elapsed=0
+
+          while [ $elapsed -lt $timeout ]; do
+            if docker compose ps elasticsearch | grep -q "healthy"; then
+              echo "✅ Elasticsearch is healthy"
+              exit 0
+            fi
+            echo "Waiting... ($elapsed/$timeout seconds)"
+            sleep 10
+            elapsed=$((elapsed + 10))
+          done
+
+          echo "❌ Elasticsearch health check timeout"
+          docker compose logs elasticsearch
           exit 1
 
       - name: Wait for Drupal to be ready
@@ -122,6 +143,9 @@ jobs:
           echo "📋 PostgreSQL Logs:"
           docker compose logs postgres
           echo ""
+          echo "📋 Elasticsearch Logs:"
+          docker compose logs elasticsearch
+          echo ""
           echo "📋 Drupal Logs:"
           docker compose logs drupal
 
@@ -140,6 +164,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Services Tested" >> $GITHUB_STEP_SUMMARY
           echo "- 🐘 PostgreSQL 15-alpine" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 Elasticsearch 8.11.0" >> $GITHUB_STEP_SUMMARY
           echo "- 🌐 Drupal 10-apache" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
