@@ -48,3 +48,5 @@ Thumbs.db
 # Docker data
 data/postgres/
 data/drupal/
+data/elasticsearch/
+data/fluentd/
