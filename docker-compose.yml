@@ -25,7 +25,8 @@ services:
         fluentd-address: localhost:24224
         tag: postgres
     depends_on:
-      - fluentd
+      fluentd:
+        condition: service_started
 
   # Service Drupal
   drupal:
@@ -53,7 +54,8 @@ services:
     networks:
       - drupal-network
     depends_on:
-      - fluentd
+      fluentd:
+        condition: service_started
       postgres:
         condition: service_healthy
     logging:
