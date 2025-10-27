@@ -1,0 +1,150 @@
+name: Docker Compose Test
+
+on:
+  # Test automatique sur les PRs et pushes
+  push:
+    branches:
+      - main
+      - 'claude/**'
+
+  pull_request:
+    branches:
+      - main
+
+  # Permet de lancer manuellement le test
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docker-compose-test:
+    name: Test Docker Compose Setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create required directories
+        run: |
+          mkdir -p data/postgres
+          mkdir -p data/drupal/modules
+          mkdir -p data/drupal/themes
+          mkdir -p data/drupal/sites
+          mkdir -p data/drupal/profiles
+
+      - name: Create .env file
+        run: |
+          cat > .env <<EOF
+          POSTGRES_DB=drupal_test
+          POSTGRES_USER=drupal_test
+          POSTGRES_PASSWORD=test_password_123
+          DRUPAL_PORT=8080
+          EOF
+
+      - name: Start Docker Compose services
+        run: |
+          docker-compose up -d
+          echo "✅ Docker Compose services started"
+
+      - name: Wait for PostgreSQL to be healthy
+        run: |
+          echo "⏳ Waiting for PostgreSQL to be ready..."
+          timeout=60
+          elapsed=0
+
+          while [ $elapsed -lt $timeout ]; do
+            if docker-compose ps postgres | grep -q "healthy"; then
+              echo "✅ PostgreSQL is healthy"
+              exit 0
+            fi
+            echo "Waiting... ($elapsed/$timeout seconds)"
+            sleep 5
+            elapsed=$((elapsed + 5))
+          done
+
+          echo "❌ PostgreSQL health check timeout"
+          docker-compose logs postgres
+          exit 1
+
+      - name: Wait for Drupal to be ready
+        run: |
+          echo "⏳ Waiting for Drupal to be ready..."
+          timeout=120
+          elapsed=0
+
+          while [ $elapsed -lt $timeout ]; do
+            if curl -f http://localhost:8080 > /dev/null 2>&1; then
+              echo "✅ Drupal is responding"
+              exit 0
+            fi
+            echo "Waiting... ($elapsed/$timeout seconds)"
+            sleep 5
+            elapsed=$((elapsed + 5))
+          done
+
+          echo "❌ Drupal not responding in time"
+          docker-compose logs drupal
+          exit 1
+
+      - name: Check Drupal HTTP response
+        run: |
+          echo "🔍 Testing Drupal HTTP endpoint..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
+          echo "HTTP Response Code: $response"
+
+          if [ "$response" = "200" ] || [ "$response" = "302" ] || [ "$response" = "301" ]; then
+            echo "✅ Drupal is accessible (HTTP $response)"
+          else
+            echo "❌ Unexpected HTTP response: $response"
+            exit 1
+          fi
+
+      - name: Verify PostgreSQL connection
+        run: |
+          echo "🔍 Testing PostgreSQL connection..."
+          docker-compose exec -T postgres psql -U drupal_test -d drupal_test -c "SELECT version();"
+          echo "✅ PostgreSQL connection successful"
+
+      - name: Check Docker containers status
+        if: always()
+        run: |
+          echo "📊 Docker Compose Status:"
+          docker-compose ps
+          echo ""
+          echo "📦 Container Details:"
+          docker-compose ps -a
+
+      - name: Display service logs on failure
+        if: failure()
+        run: |
+          echo "📋 PostgreSQL Logs:"
+          docker-compose logs postgres
+          echo ""
+          echo "📋 Drupal Logs:"
+          docker-compose logs drupal
+
+      - name: Stop Docker Compose services
+        if: always()
+        run: |
+          docker-compose down -v
+          echo "🧹 Docker Compose services stopped and volumes removed"
+
+      - name: Generate test summary
+        if: always()
+        run: |
+          echo "# 🐳 Docker Compose Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Test completed at: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Services Tested" >> $GITHUB_STEP_SUMMARY
+          echo "- 🐘 PostgreSQL 15-alpine" >> $GITHUB_STEP_SUMMARY
+          echo "- 🌐 Drupal 10-apache" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ All tests passed successfully!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Some tests failed. Check the logs above for details." >> $GITHUB_STEP_SUMMARY
+          fi

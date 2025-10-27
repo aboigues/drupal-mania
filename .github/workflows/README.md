@@ -1,5 +1,101 @@
 # GitHub Actions Workflows
 
+Ce répertoire contient les workflows GitHub Actions pour assurer la qualité et la sécurité du projet drupal-mania.
+
+## Vue d'ensemble
+
+| Workflow | Description | Déclenchement |
+|----------|-------------|---------------|
+| **Trivy Security Scan** | Scan de sécurité des images Docker | Hebdomadaire + Push/PR |
+| **Docker Compose Test** | Test du bon fonctionnement du stack | Push/PR |
+
+---
+
+## Docker Compose Test
+
+### Description
+
+Ce workflow teste automatiquement que le stack Docker Compose (PostgreSQL + Drupal) démarre et fonctionne correctement.
+
+### Tests effectués
+
+1. ✅ **Création des répertoires** : Vérifie que tous les volumes requis peuvent être créés
+2. ✅ **Démarrage des services** : Lance `docker-compose up -d`
+3. ✅ **Health check PostgreSQL** : Attend jusqu'à 60 secondes que PostgreSQL soit sain
+4. ✅ **Disponibilité Drupal** : Vérifie que Drupal répond (timeout 120s)
+5. ✅ **Test HTTP** : Valide la réponse HTTP (codes 200, 301, 302 acceptés)
+6. ✅ **Connexion PostgreSQL** : Teste la connectivité à la base de données
+7. ✅ **Logs de debug** : Affiche les logs en cas d'échec
+8. ✅ **Nettoyage** : Supprime les containers et volumes après les tests
+
+### Déclencheurs
+
+Le test s'exécute automatiquement dans les cas suivants :
+
+1. **Push** : Sur les branches `main` et `claude/**`
+2. **Pull Request** : Vers la branche `main`
+3. **Manuel** : Via le bouton "Run workflow" dans l'interface GitHub Actions
+
+### Variables d'environnement de test
+
+Le workflow utilise des valeurs de test spécifiques :
+
+```env
+POSTGRES_DB=drupal_test
+POSTGRES_USER=drupal_test
+POSTGRES_PASSWORD=test_password_123
+DRUPAL_PORT=8080
+```
+
+### Accéder aux résultats
+
+1. Aller dans l'onglet **Actions** du repository
+2. Sélectionner le workflow "Docker Compose Test"
+3. Cliquer sur un run spécifique pour voir les détails
+4. Le résumé est disponible dans l'onglet "Summary"
+
+### Que faire en cas d'échec ?
+
+Si le test échoue, voici les étapes de diagnostic :
+
+1. **Consulter les logs** : Ils sont automatiquement affichés en cas d'échec
+2. **Vérifier le docker-compose.yml** : S'assurer que la configuration est valide
+3. **Tester localement** :
+   ```bash
+   docker-compose up -d
+   docker-compose ps
+   docker-compose logs
+   ```
+4. **Vérifier les volumes** : S'assurer que les répertoires data/ sont accessibles
+5. **Vérifier les ports** : Le port 8080 ne doit pas être déjà utilisé
+
+### Exemples de commandes locales
+
+Pour reproduire les tests localement :
+
+```bash
+# Démarrer les services
+docker-compose up -d
+
+# Vérifier le statut
+docker-compose ps
+
+# Tester PostgreSQL
+docker-compose exec postgres psql -U drupal -d drupal -c "SELECT version();"
+
+# Tester Drupal
+curl -I http://localhost:8080
+
+# Voir les logs
+docker-compose logs drupal
+docker-compose logs postgres
+
+# Nettoyer
+docker-compose down -v
+```
+
+---
+
 ## Trivy Security Scan
 
 ### Description
