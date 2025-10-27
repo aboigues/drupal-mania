@@ -238,3 +238,154 @@ Mise à jour de la documentation:
 - Intégrer un système de build (webpack/gulp) pour assets
 - Ajouter des tests automatisés pour le module
 - Créer des configurations exportables (config sync)
+
+### Session 2025-10-27 - Configuration CI de sécurité avec Trivy
+
+**Mise en place d'un pipeline de scan de vulnérabilités pour les images Docker**
+
+Changements effectués:
+
+#### Workflow GitHub Actions créé
+
+**Fichier:** `.github/workflows/trivy-scan.yml`
+
+Configuration complète incluant:
+
+**Déclencheurs automatiques:**
+- Scan hebdomadaire programmé: Tous les lundis à 8h00 UTC
+- Scan sur push vers branches: `main` et `claude/**`
+- Scan sur pull requests vers: `main`
+- Déclenchement manuel possible via GitHub UI
+
+**Images scannées:**
+- `postgres:15-alpine` - Base de données PostgreSQL
+- `drupal:10-apache` - Application Drupal
+
+**Fonctionnalités de scan:**
+
+1. **Format SARIF** (Security Alert Results Interchange Format)
+   - Upload automatique vers GitHub Security tab
+   - Intégration native avec Code scanning alerts
+   - Visualisation directe dans l'interface GitHub
+
+2. **Format Table** (rapport texte lisible)
+   - Génération de rapports formatés
+   - Conservation 30 jours dans les artifacts GitHub
+   - Idéal pour revue manuelle rapide
+
+3. **Format JSON** (données structurées)
+   - Export complet des résultats
+   - Conservation 30 jours dans les artifacts
+   - Utilisable pour automatisation future
+
+**Niveaux de sévérité détectés:**
+- CRITICAL: Vulnérabilités critiques
+- HIGH: Vulnérabilités importantes
+- MEDIUM: Vulnérabilités moyennes
+- LOW: Vulnérabilités mineures (rapports détaillés uniquement)
+
+**Job de résumé automatique:**
+- Agrégation des résultats de tous les scans
+- Génération d'un résumé dans GitHub Actions Summary
+- Aperçu des 50 premières lignes de chaque rapport
+
+#### Documentation créée
+
+**Fichier:** `.github/workflows/README.md`
+
+Documentation complète incluant:
+- Description du workflow et des images scannées
+- Liste des déclencheurs et fonctionnalités
+- Guide d'accès aux résultats (Security tab + Artifacts)
+- Procédure de gestion des vulnérabilités détectées
+- Exemples de commandes Trivy en local
+- Informations de maintenance et ressources
+
+#### Stratégie de sécurité
+
+**Approche proactive:**
+- Détection automatique des nouvelles CVE via scan hebdomadaire
+- Vérification de sécurité sur chaque modification de code
+- Historique des scans conservé 30 jours
+
+**Workflow d'intervention:**
+1. Notification automatique en cas de vulnérabilités
+2. Évaluation de la sévérité
+3. Vérification des updates disponibles
+4. Mise à jour des tags dans docker-compose.yml
+5. Tests et validation
+6. Documentation des changements
+
+**Intégration GitHub:**
+- Résultats visibles dans Security > Code scanning alerts
+- Catégorisation par image (trivy-postgres, trivy-drupal)
+- Artifacts téléchargeables pour analyse approfondie
+
+## Décisions importantes (mise à jour)
+
+### Sécurité et CI/CD
+
+**Outil de scan:**
+- Trivy choisi pour sa:
+  - Large base de données de vulnérabilités
+  - Support natif des images Docker
+  - Intégration native avec GitHub Security
+  - Formats de sortie multiples (SARIF, JSON, Table)
+  - Communauté active et mises à jour fréquentes
+
+**Fréquence de scan:**
+- Hebdomadaire: Détection proactive des nouvelles CVE
+- Sur push/PR: Vérification continue avant merge
+- Manuel: Possibilité de scan à la demande
+
+**Rétention des données:**
+- 30 jours pour les artifacts (rapports)
+- Permanent pour les résultats SARIF (Security tab)
+
+**Images monitorées:**
+- Images de base uniquement (postgres, drupal)
+- Pas de build custom pour l'instant
+- Evolution possible vers scan d'images custom si nécessaire
+
+## Points d'attention (mise à jour)
+
+### Sécurité
+
+- Les scans Trivy détectent les vulnérabilités dans les images Docker officielles
+- Les vulnérabilités CRITICAL et HIGH doivent être traitées en priorité
+- Vérifier régulièrement les mises à jour des images de base
+- Le scan ne remplace pas une analyse de sécurité complète du code applicatif
+- Les rapports sont publics si le repository est public (à considérer pour les projets sensibles)
+
+### Workflow GitHub Actions
+
+- Nécessite les permissions GitHub Actions dans le repository
+- Upload SARIF requiert GitHub Advanced Security (gratuit pour repos publics)
+- Les artifacts consomment de l'espace de stockage GitHub (limites selon plan)
+- Les scans peuvent prendre quelques minutes selon la taille des images
+
+## Prochaines étapes (mise à jour)
+
+### Sécurité
+
+- Surveiller les alertes de sécurité GitHub après le premier scan
+- Établir un processus de revue hebdomadaire des résultats
+- Considérer l'ajout de seuils de tolérance (fail on CRITICAL)
+- Évaluer l'ajout de scans supplémentaires (Dockerfile, dependencies)
+- Intégrer le scan dans la documentation de déploiement
+
+### CI/CD
+
+- Ajouter des tests automatisés (unit, integration)
+- Configurer des workflows de déploiement automatique
+- Mettre en place des notifications (Slack, email) pour les vulnérabilités critiques
+- Considérer l'ajout de badges de statut dans le README
+
+### Code et Templates
+
+- Tester l'activation du module et du thème
+- Créer des types de contenu personnalisés
+- Ajouter des blocks Drupal personnalisés
+- Intégrer un système de build (webpack/gulp) pour assets
+- Ajouter des tests automatisés pour le module
+- Créer des configurations exportables (config sync)

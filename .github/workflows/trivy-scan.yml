@@ -1,0 +1,116 @@
+name: Trivy Security Scan
+
+on:
+  # Scan automatique tous les lundis à 8h
+  schedule:
+    - cron: '0 8 * * 1'
+
+  # Scan sur les PRs et pushes sur les branches principales
+  push:
+    branches:
+      - main
+      - 'claude/**'
+
+  pull_request:
+    branches:
+      - main
+
+  # Permet de lancer manuellement le scan
+  workflow_dispatch:
+
+jobs:
+  trivy-scan:
+    name: Scan Docker Images
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        image:
+          - name: postgres
+            tag: 15-alpine
+          - name: drupal
+            tag: 10-apache
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull Docker image
+        run: docker pull ${{ matrix.image.name }}:${{ matrix.image.tag }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ matrix.image.name }}:${{ matrix.image.tag }}
+          format: 'sarif'
+          output: 'trivy-results-${{ matrix.image.name }}.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: Upload Trivy results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results-${{ matrix.image.name }}.sarif'
+          category: trivy-${{ matrix.image.name }}
+
+      - name: Run Trivy vulnerability scanner (table format)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ matrix.image.name }}:${{ matrix.image.tag }}
+          format: 'table'
+          output: 'trivy-report-${{ matrix.image.name }}.txt'
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+
+      - name: Upload Trivy report as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-report-${{ matrix.image.name }}
+          path: trivy-report-${{ matrix.image.name }}.txt
+          retention-days: 30
+
+      - name: Run Trivy vulnerability scanner (JSON format)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ matrix.image.name }}:${{ matrix.image.tag }}
+          format: 'json'
+          output: 'trivy-results-${{ matrix.image.name }}.json'
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+
+      - name: Upload JSON results as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-json-${{ matrix.image.name }}
+          path: trivy-results-${{ matrix.image.name }}.json
+          retention-days: 30
+
+  trivy-scan-summary:
+    name: Generate Scan Summary
+    runs-on: ubuntu-latest
+    needs: trivy-scan
+    if: always()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate summary
+        run: |
+          echo "# 🛡️ Trivy Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Scan completed at: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          for report in trivy-report-*/trivy-report-*.txt; do
+            if [ -f "$report" ]; then
+              image_name=$(basename "$report" .txt | sed 's/trivy-report-//')
+              echo "## 📦 Image: $image_name" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              head -50 "$report" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+          echo "✅ Full reports available in artifacts" >> $GITHUB_STEP_SUMMARY
