@@ -1,0 +1,8 @@
+access drupalmania dashboard:
+  title: 'Access Drupal Mania Dashboard'
+  description: 'Allow users to access the Drupal Mania dashboard'
+
+administer drupalmania:
+  title: 'Administer Drupal Mania'
+  description: 'Perform administration tasks for Drupal Mania module'
+  restrict access: true

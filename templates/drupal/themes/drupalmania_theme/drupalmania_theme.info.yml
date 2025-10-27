@@ -1,0 +1,29 @@
+name: Drupal Mania Theme
+type: theme
+description: 'Thème personnalisé pour Drupal Mania'
+package: Custom
+core_version_requirement: ^10
+base theme: stable9
+
+# Régions du thème
+regions:
+  header: Header
+  primary_menu: 'Primary menu'
+  secondary_menu: 'Secondary menu'
+  breadcrumb: Breadcrumb
+  content: Content
+  sidebar_first: 'Left sidebar'
+  sidebar_second: 'Right sidebar'
+  footer: Footer
+
+# Libraries (CSS et JS)
+libraries:
+  - drupalmania_theme/global-styling
+  - drupalmania_theme/global-scripts
+
+# Supprimer les styles par défaut de Drupal
+libraries-override:
+  system/base: false
+
+# Ajouter des régions personnalisées si nécessaire
+regions_hidden: []

@@ -96,3 +96,145 @@ Changements effectués:
 - La pile peut être démarrée avec `docker-compose up -d`
 - L'installation de Drupal se fait via l'interface web
 - Configuration simple et standard pour débuter
+
+### Session 2025-10-27 - Implémentation des templates Drupal
+
+**Création de templates de modules et thèmes Drupal personnalisés**
+
+Changements effectués:
+
+#### Structure créée
+
+- Création du dossier `templates/drupal/` pour les templates versionnés
+- Séparation claire entre templates versionnés et données non versionnées
+
+#### Module Drupal Mania (drupalmania_module)
+
+Création d'un module personnalisé complet incluant:
+
+**Fichiers de configuration:**
+- `drupalmania_module.info.yml` - Métadonnées du module
+- `drupalmania_module.module` - Hooks et fonctions PHP
+- `drupalmania_module.routing.yml` - Routes personnalisées
+- `drupalmania_module.permissions.yml` - Permissions
+- `drupalmania_module.libraries.yml` - Bibliothèques CSS/JS
+
+**Code source:**
+- `src/Controller/DrupalManiaController.php` - Contrôleur avec:
+  - Page hello (`/drupalmania/hello`)
+  - Dashboard avec statistiques (`/drupalmania/dashboard`)
+- `src/Form/SettingsForm.php` - Formulaire de configuration admin
+
+**Assets:**
+- `css/drupalmania.css` - Styles pour le dashboard
+- `js/drupalmania.js` - Scripts JavaScript avec animations
+
+**Documentation:**
+- `README.md` - Documentation complète du module
+
+#### Thème Drupal Mania (drupalmania_theme)
+
+Création d'un thème personnalisé complet incluant:
+
+**Fichiers de configuration:**
+- `drupalmania_theme.info.yml` - Métadonnées et régions
+- `drupalmania_theme.theme` - Fonctions de preprocessing
+- `drupalmania_theme.libraries.yml` - Définition des assets
+
+**Templates Twig:**
+- `templates/page.html.twig` - Template de page principal
+- `templates/node.html.twig` - Template pour les contenus
+
+**Styles CSS:**
+- `css/style.css` - Styles principaux avec:
+  - Variables CSS pour personnalisation
+  - Layout responsive
+  - Typographie
+  - Composants (header, footer, navigation, formulaires)
+- `css/responsive.css` - Media queries pour mobile/tablette/desktop
+
+**Scripts JavaScript:**
+- `js/scripts.js` - Comportements Drupal avec:
+  - Menu mobile toggle
+  - Smooth scroll
+  - Animations au scroll
+  - Interactions formulaires
+
+**Documentation:**
+- `README.md` - Guide complet d'utilisation et personnalisation
+
+#### Configuration Docker
+
+Mise à jour du `docker-compose.yml`:
+- Ajout de volumes pour monter les templates dans le conteneur Drupal
+- Templates du module: `./templates/drupal/modules/drupalmania_module`
+- Templates du thème: `./templates/drupal/themes/drupalmania_theme`
+- Séparation modules/thèmes templates vs données utilisateur
+
+#### Documentation
+
+Mise à jour de la documentation:
+
+**templates/README.md** - Nouveau fichier avec:
+- Structure des templates
+- Instructions d'utilisation
+- Guide de développement
+- Troubleshooting
+
+**README.md principal** - Ajout de:
+- Section sur l'activation des modules/thèmes
+- Instructions pour vider le cache Drupal
+- Structure du projet détaillée
+- Fonctionnalités incluses
+- Dépannage des templates
+
+#### Architecture
+
+**Principe de séparation:**
+- `templates/` → Code versionné (modules, thèmes)
+- `data/` → Données non versionnées (contenu, config site)
+
+**Avantages:**
+- Templates disponibles immédiatement après démarrage Docker
+- Versionnement Git du code Drupal personnalisé
+- Facilite le développement collaboratif
+- Déploiement simplifié
+
+## Décisions importantes (mise à jour)
+
+### Templates Drupal
+
+**Choix de structure:**
+- Templates versionnés dans `templates/drupal/`
+- Montage direct dans les conteneurs via Docker volumes
+- Séparation claire code vs données
+
+**Module personnalisé:**
+- Basé sur Drupal 10
+- Dashboard avec statistiques (nodes, users)
+- Routes personnalisées
+- Formulaire de configuration
+- CSS/JS moderne avec animations
+
+**Thème personnalisé:**
+- Basé sur stable9
+- Design responsive (mobile-first)
+- Variables CSS pour customisation
+- Templates Twig surchargeables
+- JavaScript avec Drupal behaviors
+
+## Points d'attention (mise à jour)
+
+- Après installation Drupal, activer manuellement le module et le thème
+- Vider le cache Drupal après modifications: `docker exec -it drupal-app drush cr`
+- Les templates sont en lecture seule dans le conteneur (montés en volume)
+- Permissions peuvent nécessiter ajustement selon l'environnement
+
+## Prochaines étapes (mise à jour)
+
+- Tester l'activation du module et du thème
+- Créer des types de contenu personnalisés
+- Ajouter des blocks Drupal personnalisés
+- Intégrer un système de build (webpack/gulp) pour assets
+- Ajouter des tests automatisés pour le module
+- Créer des configurations exportables (config sync)

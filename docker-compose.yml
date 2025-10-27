@@ -35,8 +35,12 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
     volumes:
-      - ./data/drupal/modules:/opt/drupal/web/modules/custom
-      - ./data/drupal/themes:/opt/drupal/web/themes/custom
+      # Templates de modules et thèmes (versionnés)
+      - ./templates/drupal/modules/drupalmania_module:/opt/drupal/web/modules/custom/drupalmania_module
+      - ./templates/drupal/themes/drupalmania_theme:/opt/drupal/web/themes/custom/drupalmania_theme
+      # Données persistantes (non versionnées)
+      - ./data/drupal/modules:/opt/drupal/web/modules/custom/user_modules
+      - ./data/drupal/themes:/opt/drupal/web/themes/custom/user_themes
       - ./data/drupal/sites:/opt/drupal/web/sites
       - ./data/drupal/profiles:/opt/drupal/web/profiles
     networks:

@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * @file
+ * Functions to support theming in the Drupal Mania theme.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_preprocess_HOOK() for HTML document templates.
+ */
+function drupalmania_theme_preprocess_html(&$variables) {
+  // Ajouter une classe au body basée sur le type de node
+  if ($node = \Drupal::routeMatch()->getParameter('node')) {
+    $variables['attributes']['class'][] = 'page-node-' . $node->bundle();
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page templates.
+ */
+function drupalmania_theme_preprocess_page(&$variables) {
+  // Ajouter des variables personnalisées aux templates de page
+  $variables['site_name'] = \Drupal::config('system.site')->get('name');
+  $variables['site_slogan'] = \Drupal::config('system.site')->get('slogan');
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for node templates.
+ */
+function drupalmania_theme_preprocess_node(&$variables) {
+  // Ajouter la date de création formatée
+  $node = $variables['node'];
+  $variables['created'] = \Drupal::service('date.formatter')->format(
+    $node->getCreatedTime(),
+    'custom',
+    'd/m/Y'
+  );
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for pages.
+ */
+function drupalmania_theme_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  // Ajouter des suggestions de templates basées sur le type de contenu
+  if ($node = \Drupal::routeMatch()->getParameter('node')) {
+    $suggestions[] = 'page__node__' . $node->bundle();
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function drupalmania_theme_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Personnaliser les formulaires
+  if ($form_id == 'search_block_form') {
+    $form['keys']['#attributes']['placeholder'] = t('Search...');
+  }
+}

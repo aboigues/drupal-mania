@@ -21,13 +21,20 @@ https://github.com/aboigues/drupal-mania.git
 ```
 drupal-mania/
 ├── README.md                  # Ce fichier
+├── docker-compose.yml         # Configuration Docker
+├── .env.example               # Exemple de configuration
 ├── .claude/                   # Configuration et instructions pour Claude
 │   ├── INSTRUCTIONS.md        # Instructions complètes pour Claude
 │   ├── QUICKSTART.md          # Démarrage rapide
 │   └── CONTEXT.md             # Contexte et historique du projet
+├── templates/                 # Templates Drupal versionnés
+│   └── drupal/
+│       ├── modules/           # Modules personnalisés
+│       └── themes/            # Thèmes personnalisés
+├── data/                      # Données persistantes (non versionnées)
+│   ├── postgres/              # Données PostgreSQL
+│   └── drupal/                # Données Drupal
 ├── docs/                      # Documentation
-├── src/                       # Code source
-├── data/                      # Données
 └── tests/                     # Tests
 ```
 
@@ -79,6 +86,23 @@ L'assistant d'installation de Drupal s'ouvrira. Utiliser les paramètres suivant
 - Hôte: postgres
 - Port: 5432
 
+### 5. Activer les modules et thèmes personnalisés
+
+Le projet inclut des templates Drupal prêts à l'emploi:
+
+**Module Drupal Mania:**
+1. Allez dans **Extend** (Extensions)
+2. Cherchez "Drupal Mania Module"
+3. Cochez la case et cliquez sur "Install"
+4. Accédez au dashboard: `http://localhost:8080/drupalmania/dashboard`
+
+**Thème Drupal Mania:**
+1. Allez dans **Appearance** (Apparence)
+2. Cherchez "Drupal Mania Theme"
+3. Cliquez sur "Install and set as default"
+
+Pour plus d'informations, consultez [templates/README.md](templates/README.md)
+
 ## Commandes utiles
 
 ### Démarrer les services
@@ -124,6 +148,16 @@ docker exec -it drupal-app bash
 docker exec -it drupal-postgres psql -U drupal -d drupal
 ```
 
+### Vider le cache Drupal
+
+```bash
+# Méthode 1: Via Drush (recommandé)
+docker exec -it drupal-app drush cr
+
+# Méthode 2: Via l'interface admin
+# Configuration > Development > Performance > Clear all caches
+```
+
 ## Structure du projet
 
 ```
@@ -135,12 +169,36 @@ drupal-mania/
 │   ├── INSTRUCTIONS.md        # Instructions complètes pour Claude
 │   ├── QUICKSTART.md          # Démarrage rapide
 │   └── CONTEXT.md             # Contexte et historique du projet
+├── templates/                 # Templates Drupal (versionnés)
+│   ├── README.md              # Documentation des templates
+│   └── drupal/
+│       ├── modules/           # Modules personnalisés
+│       │   └── drupalmania_module/  # Module principal
+│       └── themes/            # Thèmes personnalisés
+│           └── drupalmania_theme/   # Thème principal
 ├── docs/                      # Documentation
-├── data/                      # Données persistantes
-│   ├── postgres/              # Données PostgreSQL (non versionné)
-│   └── drupal/                # Données Drupal (non versionné)
+├── data/                      # Données persistantes (non versionnées)
+│   ├── postgres/              # Données PostgreSQL
+│   └── drupal/                # Données Drupal
+│       ├── modules/           # Modules utilisateur
+│       ├── themes/            # Thèmes utilisateur
+│       ├── sites/             # Configuration du site
+│       └── profiles/          # Profils d'installation
 └── tests/                     # Tests
 ```
+
+## Fonctionnalités incluses
+
+### Templates Drupal personnalisés
+
+Le projet inclut des templates prêts à l'emploi:
+
+- **Module Drupal Mania** : Dashboard avec statistiques, pages personnalisées, configuration
+- **Thème Drupal Mania** : Design responsive, templates Twig, CSS variables
+
+Les templates sont versionnés dans Git et montés automatiquement dans les conteneurs.
+
+Voir [templates/README.md](templates/README.md) pour plus de détails.
 
 ## Dépannage
 
@@ -154,6 +212,16 @@ docker info
 ### Port 8080 déjà utilisé
 
 Modifier la variable `DRUPAL_PORT` dans le fichier `.env`
+
+### Le module/thème n'apparaît pas
+
+```bash
+# Vider le cache Drupal
+docker exec -it drupal-app drush cr
+
+# Redémarrer les conteneurs
+docker-compose restart
+```
 
 ### Réinitialiser complètement
 
