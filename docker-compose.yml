@@ -22,7 +22,8 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: localhost:24224
+        fluentd-address: fluentd:24224
+        fluentd-async-connect: "true"
         tag: postgres
     depends_on:
       fluentd:
@@ -61,7 +62,8 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: localhost:24224
+        fluentd-address: fluentd:24224
+        fluentd-async-connect: "true"
         tag: drupal
 
   # Service Elasticsearch
