@@ -20,6 +20,32 @@ services:
       timeout: 5s
       retries: 5
 
+  # Service Elasticsearch
+  elasticsearch:
+    image: elasticsearch:8.11.0
+    container_name: drupal-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=drupal-cluster
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - drupal-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+
   # Service Drupal
   drupal:
     image: drupal:10-apache
@@ -34,6 +60,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-drupal}
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
+      # Configuration Elasticsearch
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
     volumes:
       # Templates de modules et thèmes (versionnés)
       - ./templates/drupal/modules/drupalmania_module:/opt/drupal/web/modules/custom/drupalmania_module
@@ -47,6 +76,8 @@ services:
       - drupal-network
     depends_on:
       postgres:
+        condition: service_healthy
+      elasticsearch:
         condition: service_healthy
 
 networks:
