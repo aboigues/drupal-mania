@@ -62,9 +62,9 @@ Si le test échoue, voici les étapes de diagnostic :
 2. **Vérifier le docker-compose.yml** : S'assurer que la configuration est valide
 3. **Tester localement** :
    ```bash
-   docker-compose up -d
-   docker-compose ps
-   docker-compose logs
+   docker compose up -d
+   docker compose ps
+   docker compose logs
    ```
 4. **Vérifier les volumes** : S'assurer que les répertoires data/ sont accessibles
 5. **Vérifier les ports** : Le port 8080 ne doit pas être déjà utilisé
@@ -75,23 +75,23 @@ Pour reproduire les tests localement :
 
 ```bash
 # Démarrer les services
-docker-compose up -d
+docker compose up -d
 
 # Vérifier le statut
-docker-compose ps
+docker compose ps
 
 # Tester PostgreSQL
-docker-compose exec postgres psql -U drupal -d drupal -c "SELECT version();"
+docker compose exec postgres psql -U drupal -d drupal -c "SELECT version();"
 
 # Tester Drupal
 curl -I http://localhost:8080
 
 # Voir les logs
-docker-compose logs drupal
-docker-compose logs postgres
+docker compose logs drupal
+docker compose logs postgres
 
 # Nettoyer
-docker-compose down -v
+docker compose down -v
 ```
 
 ---

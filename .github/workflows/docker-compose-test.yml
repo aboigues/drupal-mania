@@ -45,7 +45,7 @@ jobs:
 
       - name: Start Docker Compose services
         run: |
-          docker-compose up -d
+          docker compose up -d
           echo "✅ Docker Compose services started"
 
       - name: Wait for PostgreSQL to be healthy
@@ -55,7 +55,7 @@ jobs:
           elapsed=0
 
           while [ $elapsed -lt $timeout ]; do
-            if docker-compose ps postgres | grep -q "healthy"; then
+            if docker compose ps postgres | grep -q "healthy"; then
               echo "✅ PostgreSQL is healthy"
               exit 0
             fi
@@ -65,7 +65,7 @@ jobs:
           done
 
           echo "❌ PostgreSQL health check timeout"
-          docker-compose logs postgres
+          docker compose logs postgres
           exit 1
 
       - name: Wait for Drupal to be ready
@@ -85,7 +85,7 @@ jobs:
           done
 
           echo "❌ Drupal not responding in time"
-          docker-compose logs drupal
+          docker compose logs drupal
           exit 1
 
       - name: Check Drupal HTTP response
@@ -104,31 +104,31 @@ jobs:
       - name: Verify PostgreSQL connection
         run: |
           echo "🔍 Testing PostgreSQL connection..."
-          docker-compose exec -T postgres psql -U drupal_test -d drupal_test -c "SELECT version();"
+          docker compose exec -T postgres psql -U drupal_test -d drupal_test -c "SELECT version();"
           echo "✅ PostgreSQL connection successful"
 
       - name: Check Docker containers status
         if: always()
         run: |
           echo "📊 Docker Compose Status:"
-          docker-compose ps
+          docker compose ps
           echo ""
           echo "📦 Container Details:"
-          docker-compose ps -a
+          docker compose ps -a
 
       - name: Display service logs on failure
         if: failure()
         run: |
           echo "📋 PostgreSQL Logs:"
-          docker-compose logs postgres
+          docker compose logs postgres
           echo ""
           echo "📋 Drupal Logs:"
-          docker-compose logs drupal
+          docker compose logs drupal
 
       - name: Stop Docker Compose services
         if: always()
         run: |
-          docker-compose down -v
+          docker compose down -v
           echo "🧹 Docker Compose services stopped and volumes removed"
 
       - name: Generate test summary
