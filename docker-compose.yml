@@ -101,8 +101,11 @@ services:
       start_period: 60s
 
   # Service Drupal
+  # Updated to 11.2-apache to fix security vulnerabilities:
+  # - CVE-2024-55636 (CVSS 9.8): PHP Object Injection vulnerability (affects 11.0.0 - 11.0.7)
+  # Using drupal:11.2-apache (currently 11.2.5, released October 2025)
   drupal:
-    image: drupal:11-apache
+    image: drupal:11.2-apache
     container_name: drupal-app
     restart: unless-stopped
     ports:
