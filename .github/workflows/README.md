@@ -166,8 +166,8 @@ Si vous souhaitez personnaliser le comportement, vous pouvez ajouter ces secrets
 3. Filtrer par catégorie :
    - `trivy-postgres` : PostgreSQL
    - `trivy-drupal` : Drupal
-   - `trivy-elasticsearch/elasticsearch` : Elasticsearch
-   - `trivy-kibana/kibana` : Kibana
+   - `trivy-elasticsearch` : Elasticsearch
+   - `trivy-kibana` : Kibana
 
 #### Via les Artifacts
 
@@ -176,12 +176,12 @@ Si vous souhaitez personnaliser le comportement, vous pouvez ajouter ces secrets
 3. Télécharger les artifacts :
    - `trivy-report-postgres` : Rapport texte pour PostgreSQL
    - `trivy-report-drupal` : Rapport texte pour Drupal
-   - `trivy-report-elasticsearch/elasticsearch` : Rapport texte pour Elasticsearch
-   - `trivy-report-kibana/kibana` : Rapport texte pour Kibana
+   - `trivy-report-elasticsearch` : Rapport texte pour Elasticsearch
+   - `trivy-report-kibana` : Rapport texte pour Kibana
    - `trivy-json-postgres` : Rapport JSON pour PostgreSQL
    - `trivy-json-drupal` : Rapport JSON pour Drupal
-   - `trivy-json-elasticsearch/elasticsearch` : Rapport JSON pour Elasticsearch
-   - `trivy-json-kibana/kibana` : Rapport JSON pour Kibana
+   - `trivy-json-elasticsearch` : Rapport JSON pour Elasticsearch
+   - `trivy-json-kibana` : Rapport JSON pour Kibana
 
 ### Que faire en cas de vulnérabilités ?
 
