@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Service PostgreSQL
   postgres:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: drupal-postgres
     restart: unless-stopped
     environment:
@@ -22,7 +22,7 @@ services:
 
   # Service Elasticsearch
   elasticsearch:
-    image: elasticsearch:8.11.0
+    image: elasticsearch:8.19.6
     container_name: drupal-elasticsearch
     restart: unless-stopped
     environment:
@@ -48,7 +48,7 @@ services:
 
   # Service Fluentd (mode asynchrone)
   fluentd:
-    image: fluent/fluentd:v1.16-1
+    image: fluent/fluentd:v1.19-debian-2
     container_name: drupal-fluentd
     restart: unless-stopped
     user: root
@@ -69,7 +69,7 @@ services:
 
   # Service Kibana
   kibana:
-    image: kibana:8.11.0
+    image: kibana:8.19.6
     container_name: drupal-kibana
     restart: unless-stopped
     ports:
@@ -93,7 +93,7 @@ services:
 
   # Service Drupal
   drupal:
-    image: drupal:10-apache
+    image: drupal:11-apache
     container_name: drupal-app
     restart: unless-stopped
     ports:
