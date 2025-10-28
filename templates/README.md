@@ -17,7 +17,7 @@ templates/
 
 ### Avec Docker Compose
 
-Les templates sont automatiquement montés dans les conteneurs Docker grâce au `docker-compose.yml`:
+Les templates sont automatiquement montés dans les conteneurs Docker grâce au `docker compose.yml`:
 
 ```yaml
 volumes:
@@ -25,7 +25,7 @@ volumes:
   - ./templates/drupal/themes/drupalmania_theme:/opt/drupal/web/themes/custom/drupalmania_theme
 ```
 
-Après avoir démarré les conteneurs avec `docker-compose up -d`, les modules et thèmes seront disponibles dans Drupal.
+Après avoir démarré les conteneurs avec `docker compose up -d`, les modules et thèmes seront disponibles dans Drupal.
 
 ### Activer le module
 
@@ -58,8 +58,8 @@ Configuration > Development > Performance > Clear all caches
 ### Ajouter un nouveau module ou thème
 
 1. Créez un nouveau dossier dans `templates/drupal/modules/` ou `templates/drupal/themes/`
-2. Ajoutez le volume correspondant dans `docker-compose.yml`
-3. Redémarrez les conteneurs: `docker-compose restart`
+2. Ajoutez le volume correspondant dans `docker compose.yml`
+3. Redémarrez les conteneurs: `docker compose restart`
 4. Le nouveau module/thème sera disponible dans Drupal
 
 ## Templates fournis
@@ -103,7 +103,7 @@ Les templates dans ce dossier sont versionnés dans Git. Cela permet:
 Pour développer localement:
 
 1. Clonez le repository
-2. Démarrez Docker: `docker-compose up -d`
+2. Démarrez Docker: `docker compose up -d`
 3. Modifiez les fichiers dans `templates/`
 4. Videz le cache Drupal pour voir les changements
 5. Committez vos modifications
@@ -118,8 +118,8 @@ Pour développer localement:
 ### Le module/thème n'apparaît pas
 
 1. Vérifiez le fichier `.info.yml`
-2. Vérifiez que le volume est bien défini dans `docker-compose.yml`
-3. Redémarrez les conteneurs: `docker-compose restart`
+2. Vérifiez que le volume est bien défini dans `docker compose.yml`
+3. Redémarrez les conteneurs: `docker compose restart`
 4. Videz le cache: `docker exec -it drupal-app drush cr`
 
 ### Erreurs de permissions
