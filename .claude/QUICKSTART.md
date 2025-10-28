@@ -219,6 +219,18 @@ Les 5 vulnérabilités critiques/high suivantes ont été identifiées et corrig
    - **Date de publication** : 9 décembre 2024
    - **Note** : Aucune exploitation connue dans le core Drupal, mais la correction est recommandée par précaution
 
+7. **CVE-2024-55638** (CVSS 9.8) - **CRITIQUE**
+   - **Composant** : Drupal Core - Système de désérialisation
+   - **Type** : PHP Object Injection (Deserialization of Untrusted Data)
+   - **Impact** : Vulnérabilité similaire à CVE-2024-55636, permettant une injection d'objet PHP exploitable en combinaison avec une autre vulnérabilité de désérialisation
+   - **Versions affectées** :
+     - Drupal 7.0 à 7.101
+     - Drupal 8.0.0 à 10.2.10
+     - Drupal 10.3.0 à 10.3.8
+   - **Versions corrigées** : Drupal 7.102, 10.2.11, 10.3.9
+   - **Statut pour ce projet** : ✅ **NON AFFECTÉ** - Drupal 11.2.5 n'est pas concerné par cette CVE
+   - **Note** : CVE-2024-55638 n'affecte que les versions Drupal 7.x, 8.x à 10.2.x, et 10.3.x. Drupal 11.x n'est pas vulnérable à cette CVE spécifique
+
 ### Autres composants analysés
 
 - **PostgreSQL 17-alpine** : ✅ Version à jour, pas de CVE critique
