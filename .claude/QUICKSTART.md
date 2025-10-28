@@ -167,6 +167,134 @@ Les logs en échec sont sauvegardés dans `/fluentd/log/failed_records` (compres
 3. **Échec définitif** : Logs sauvegardés dans le fichier de secours
 4. **Monitoring** : API monitor_agent sur le port 24220
 
+## Tests Selenium
+
+### Architecture de tests
+
+Tests automatisés end-to-end avec Selenium WebDriver pour vérifier le bon fonctionnement de Drupal.
+
+### Structure des tests
+
+```
+tests/
+  └── selenium/
+      ├── __init__.py
+      ├── requirements.txt          # Dépendances Python (selenium, pytest)
+      └── test_drupal_basic.py      # Tests basiques Drupal
+```
+
+### Tests inclus
+
+Les tests Selenium vérifient :
+
+1. **Page d'accueil** : Chargement correct de la page d'accueil
+2. **Navigation** : Accès aux pages /user et /user/login
+3. **Structure HTML** : Présence des éléments HTML de base
+4. **Performance** : Temps de chargement < 30 secondes
+5. **Stabilité** : Chargements multiples successifs
+
+### Exécution locale
+
+```bash
+# Installer les dépendances
+pip install -r tests/selenium/requirements.txt
+
+# Installer Chrome/Chromium et ChromeDriver
+# Sur Ubuntu/Debian:
+sudo apt-get install chromium-browser chromium-chromedriver
+
+# Démarrer les services Docker
+docker compose up -d
+
+# Attendre que Drupal soit prêt
+curl http://localhost:8080
+
+# Lancer les tests
+cd tests/selenium
+pytest test_drupal_basic.py -v -s
+
+# Générer un rapport HTML
+pytest test_drupal_basic.py -v -s --html=report.html --self-contained-html
+```
+
+### GitHub Actions
+
+Les tests Selenium s'exécutent automatiquement via GitHub Actions :
+
+- **Déclencheurs** :
+  - Push sur `main` et branches `claude/**`
+  - Pull requests vers `main`
+  - Exécution manuelle via `workflow_dispatch`
+
+- **Workflow** : `.github/workflows/selenium-tests.yml`
+
+- **Étapes** :
+  1. Setup Python 3.11
+  2. Démarrage Docker Compose (Drupal, PostgreSQL, Elasticsearch)
+  3. Installation Chrome + ChromeDriver
+  4. Exécution des tests Selenium
+  5. Génération du rapport HTML
+  6. Upload du rapport en artifact (30 jours de rétention)
+
+### Visualiser les résultats
+
+1. **GitHub Actions** :
+   - Aller dans l'onglet "Actions" du repository
+   - Sélectionner le workflow "Selenium Tests"
+   - Consulter les logs d'exécution
+   - Télécharger l'artifact "selenium-test-report"
+
+2. **Rapport HTML local** :
+   ```bash
+   # Ouvrir le rapport généré
+   open tests/selenium/report.html
+   # ou
+   firefox tests/selenium/report.html
+   ```
+
+### Configuration
+
+- **URL Drupal** : Variable d'environnement `DRUPAL_URL` (défaut: `http://localhost:8080`)
+- **Mode headless** : Tests exécutés sans interface graphique (optimal pour CI/CD)
+- **Timeouts** :
+  - Attente implicite : 10 secondes
+  - Attente explicite : 20 secondes
+  - Timeout de chargement de page : 30 secondes
+
+### Dépendances
+
+```
+selenium==4.27.1       # WebDriver pour automatisation navigateur
+pytest==8.3.4          # Framework de tests
+pytest-html==4.1.1     # Génération de rapports HTML
+```
+
+### Troubleshooting
+
+**Problème** : Tests échouent avec "ChromeDriver not found"
+```bash
+# Vérifier l'installation
+which chromedriver
+google-chrome --version
+chromedriver --version
+```
+
+**Problème** : Drupal ne répond pas
+```bash
+# Vérifier les services
+docker compose ps
+docker compose logs drupal
+
+# Vérifier l'URL
+curl -I http://localhost:8080
+```
+
+**Problème** : Timeout sur les tests
+```bash
+# Augmenter les timeouts dans test_drupal_basic.py
+# Ou donner plus de temps au démarrage de Drupal
+```
+
 ## Sécurité - Vulnérabilités traitées
 
 ### Session 2025-10-28 - Correction des vulnérabilités critiques

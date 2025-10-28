@@ -1,0 +1,3 @@
+"""
+Tests pour Drupal Mania
+"""
