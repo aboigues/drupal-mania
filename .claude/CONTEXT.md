@@ -32,7 +32,7 @@ Pile applicative Drupal + postgres déployée dans des conteneurs Docker
 
 Changements effectués:
 - Création de la structure de dossiers pour les données (`data/postgres/`, `data/drupal/`)
-- Création du fichier `docker-compose.yml` avec:
+- Création du fichier `docker compose.yml` avec:
   - Service PostgreSQL 15 (Alpine)
   - Service Drupal 10 (Apache)
   - Configuration des volumes pour la persistance des données
@@ -93,7 +93,7 @@ Changements effectués:
 ## Notes
 
 **Première itération complète et fonctionnelle**
-- La pile peut être démarrée avec `docker-compose up -d`
+- La pile peut être démarrée avec `docker compose up -d`
 - L'installation de Drupal se fait via l'interface web
 - Configuration simple et standard pour débuter
 
@@ -165,7 +165,7 @@ Création d'un thème personnalisé complet incluant:
 
 #### Configuration Docker
 
-Mise à jour du `docker-compose.yml`:
+Mise à jour du `docker compose.yml`:
 - Ajout de volumes pour monter les templates dans le conteneur Drupal
 - Templates du module: `./templates/drupal/modules/drupalmania_module`
 - Templates du thème: `./templates/drupal/themes/drupalmania_theme`
@@ -312,7 +312,7 @@ Documentation complète incluant:
 1. Notification automatique en cas de vulnérabilités
 2. Évaluation de la sévérité
 3. Vérification des updates disponibles
-4. Mise à jour des tags dans docker-compose.yml
+4. Mise à jour des tags dans docker compose.yml
 5. Tests et validation
 6. Documentation des changements
 

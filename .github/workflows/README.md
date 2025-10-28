@@ -20,7 +20,7 @@ Ce workflow teste automatiquement que le stack Docker Compose (PostgreSQL + Drup
 ### Tests effectués
 
 1. ✅ **Création des répertoires** : Vérifie que tous les volumes requis peuvent être créés
-2. ✅ **Démarrage des services** : Lance `docker-compose up -d`
+2. ✅ **Démarrage des services** : Lance `docker compose up -d`
 3. ✅ **Health check PostgreSQL** : Attend jusqu'à 60 secondes que PostgreSQL soit sain
 4. ✅ **Disponibilité Drupal** : Vérifie que Drupal répond (timeout 120s)
 5. ✅ **Test HTTP** : Valide la réponse HTTP (codes 200, 301, 302 acceptés)
@@ -59,7 +59,7 @@ DRUPAL_PORT=8080
 Si le test échoue, voici les étapes de diagnostic :
 
 1. **Consulter les logs** : Ils sont automatiquement affichés en cas d'échec
-2. **Vérifier le docker-compose.yml** : S'assurer que la configuration est valide
+2. **Vérifier le docker compose.yml** : S'assurer que la configuration est valide
 3. **Tester localement** :
    ```bash
    docker compose up -d
@@ -177,7 +177,7 @@ Si vous souhaitez personnaliser le comportement, vous pouvez ajouter ces secrets
 
 1. **Évaluer la sévérité** : Prioriser les vulnérabilités CRITICAL et HIGH
 2. **Vérifier les mises à jour** : Consulter si une nouvelle version de l'image est disponible
-3. **Mettre à jour** : Modifier les tags d'images dans `docker-compose.yml`
+3. **Mettre à jour** : Modifier les tags d'images dans `docker compose.yml`
 4. **Tester** : Vérifier que l'application fonctionne avec la nouvelle version
 5. **Documenter** : Noter les changements dans `CONTEXT.md`
 

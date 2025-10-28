@@ -51,7 +51,7 @@ https://github.com/aboigues/drupal-mania.git
 ```
 drupal-mania/
 ├── README.md                  # Ce fichier
-├── docker-compose.yml         # Configuration Docker Compose
+├── docker compose.yml         # Configuration Docker Compose
 ├── .env.example               # Exemple de configuration
 ├── .claude/                   # Configuration et instructions pour Claude
 │   ├── INSTRUCTIONS.md        # Instructions complètes pour Claude
@@ -124,7 +124,7 @@ Modifier le fichier `.env` pour personnaliser:
 ### 3. Démarrer les conteneurs
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### 4. Accéder à Drupal
@@ -186,38 +186,38 @@ Ouvrir un navigateur et aller à: `http://localhost:5601`
 ### Démarrer les services
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Arrêter les services
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Voir les logs
 
 ```bash
 # Tous les services
-docker-compose logs -f
+docker compose logs -f
 
 # Drupal uniquement
-docker-compose logs -f drupal
+docker compose logs -f drupal
 
 # PostgreSQL uniquement
-docker-compose logs -f postgres
+docker compose logs -f postgres
 
 # Fluentd uniquement
-docker-compose logs -f fluentd
+docker compose logs -f fluentd
 
 # Elasticsearch uniquement
-docker-compose logs -f elasticsearch
+docker compose logs -f elasticsearch
 ```
 
 ### Redémarrer les services
 
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 ### Accéder au conteneur Drupal
@@ -246,7 +246,7 @@ docker exec -it drupal-app drush cr
 
 ```bash
 # Vérifier le statut de tous les services
-docker-compose ps
+docker compose ps
 
 # Vérifier la santé d'Elasticsearch
 curl http://localhost:9200/_cluster/health?pretty
@@ -269,7 +269,7 @@ curl http://localhost:24220/api/plugins.json
 ```
 drupal-mania/
 ├── README.md                  # Ce fichier
-├── docker-compose.yml         # Configuration Docker
+├── docker compose.yml         # Configuration Docker
 ├── .env.example               # Exemple de configuration
 ├── .claude/                   # Configuration et instructions pour Claude
 │   ├── INSTRUCTIONS.md        # Instructions complètes pour Claude
@@ -356,22 +356,22 @@ Modifier la variable `DRUPAL_PORT` dans le fichier `.env`
 docker exec -it drupal-app drush cr
 
 # Redémarrer les conteneurs
-docker-compose restart
+docker compose restart
 ```
 
 ### Réinitialiser complètement
 
 ```bash
-docker-compose down -v
+docker compose down -v
 rm -rf data/postgres data/drupal
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Elasticsearch ne démarre pas
 
 ```bash
 # Vérifier les logs
-docker-compose logs elasticsearch
+docker compose logs elasticsearch
 
 # Augmenter la mémoire virtuelle (Linux)
 sudo sysctl -w vm.max_map_count=262144
@@ -384,7 +384,7 @@ echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
 
 ```bash
 # Vérifier que Fluentd fonctionne
-docker-compose logs fluentd
+docker compose logs fluentd
 
 # Vérifier qu'Elasticsearch reçoit des données
 curl http://localhost:9200/_cat/indices?v
@@ -393,7 +393,7 @@ curl http://localhost:9200/_cat/indices?v
 curl http://localhost:24220/api/plugins.json
 
 # Redémarrer Fluentd
-docker-compose restart fluentd
+docker compose restart fluentd
 ```
 
 ### Kibana ne se connecte pas à Elasticsearch
@@ -404,7 +404,7 @@ curl http://localhost:9200/_cluster/health?pretty
 
 # Attendre que le statut soit au moins "yellow"
 # Redémarrer Kibana
-docker-compose restart kibana
+docker compose restart kibana
 ```
 
 ### Les buffers Fluentd sont pleins
@@ -414,9 +414,9 @@ docker-compose restart kibana
 df -h
 
 # Nettoyer les anciens buffers (attention: perte de données)
-docker-compose stop fluentd
+docker compose stop fluentd
 rm -rf data/fluentd/log/buffer/*
-docker-compose start fluentd
+docker compose start fluentd
 
 # Ou augmenter queue_limit_length dans config/fluentd/fluent.conf
 ```
