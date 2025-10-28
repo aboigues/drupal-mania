@@ -173,40 +173,40 @@ Les logs en échec sont sauvegardés dans `/fluentd/log/failed_records` (compres
 
 Les 5 vulnérabilités critiques/high suivantes ont été identifiées et corrigées :
 
-#### Vulnérabilités Kibana (8.19.6 → 8.19.7)
+#### Vulnérabilités Kibana (8.19.6 → 8.19.5)
 
 1. **CVE-2025-25009** (CVSS 8.7) - **CRITIQUE**
    - **Composant** : Kibana - Fonctionnalité de téléchargement de fichiers
    - **Type** : Cross-Site Scripting (XSS) persistant
    - **Impact** : Un attaquant avec des privilèges de téléchargement peut injecter du JavaScript malveillant dans les pages stockées, permettant le vol de données, le détournement de session ou l'escalade de privilèges
-   - **Correction** : Mise à jour Kibana 8.19.6 → 8.19.7
+   - **Correction** : Mise à jour Kibana 8.19.6 → 8.19.5 (docker.elastic.co/kibana/kibana:8.19.5)
 
 2. **CVE-2025-25018** (CVSS 8.7) - **CRITIQUE**
    - **Composant** : Kibana - Interface Fleet et Integrations
    - **Type** : Stored Cross-Site Scripting (XSS)
    - **Impact** : Vulnérabilité XSS stockée permettant l'exécution de scripts malveillants
-   - **Correction** : Mise à jour Kibana 8.19.6 → 8.19.7
+   - **Correction** : Mise à jour Kibana 8.19.6 → 8.19.5 (docker.elastic.co/kibana/kibana:8.19.5)
 
 3. **CVE-2025-25017** (CVSS 8.2) - **HIGH**
    - **Composant** : Kibana - Moteur de visualisation Vega
    - **Type** : Vulnérabilité dans le moteur Vega
    - **Impact** : Exploitation possible via des visualisations Vega malveillantes
-   - **Correction** : Mise à jour Kibana 8.19.6 → 8.19.7
+   - **Correction** : Mise à jour Kibana 8.19.6 → 8.19.5 (docker.elastic.co/kibana/kibana:8.19.5)
 
-#### Vulnérabilités Elasticsearch (8.19.6 → 8.19.7)
+#### Vulnérabilités Elasticsearch (8.19.6 → 8.19.5)
 
 4. **CVE-2025-37727** (CVSS 5.3) - **MEDIUM**
    - **Composant** : Elasticsearch - Système d'audit logging
    - **Type** : Divulgation d'informations sensibles
    - **Impact** : Des informations sensibles peuvent être exposées dans les logs d'audit
-   - **Correction** : Mise à jour Elasticsearch 8.19.6 → 8.19.7
+   - **Correction** : Mise à jour Elasticsearch 8.19.6 → 8.19.5 (docker.elastic.co/elasticsearch/elasticsearch:8.19.5)
    - **Workaround** : Définir `xpack.security.audit.logfile.events.emit_request_body` à `false`
 
 5. **CVE-2025-37728** (CVSS 5.4) - **MEDIUM**
    - **Composant** : Elasticsearch/Kibana - Connecteur CrowdStrike
    - **Type** : Vulnérabilité dans le connecteur Elastic-CrowdStrike
    - **Impact** : Affecte les instances utilisant le connecteur CrowdStrike
-   - **Correction** : Mise à jour Elasticsearch/Kibana 8.19.6 → 8.19.7
+   - **Correction** : Mise à jour Elasticsearch/Kibana 8.19.6 → 8.19.5
 
 ### Autres composants analysés
 
@@ -218,7 +218,8 @@ Les 5 vulnérabilités critiques/high suivantes ont été identifiées et corrig
 
 - [Elastic Security Update ESA-2025-18](https://discuss.elastic.co/t/elasticsearch-8-18-8-8-19-5-9-0-8-9-1-5-security-update-esa-2025-18/382453)
 - [Elastic Security Update ESA-2025-20](https://discuss.elastic.co/t/kibana-8-18-8-8-19-5-9-0-8-and-9-1-5-security-update-esa-2025-20/382449)
-- Versions patchées officielles : 8.18.8, 8.19.5, 8.19.7, 9.0.8, 9.1.5
+- Versions patchées officielles : 8.18.8, 8.19.5, 9.0.8, 9.1.5
+- Registre Docker officiel : docker.elastic.co
 
 ### Prochaines étapes de sécurité
 

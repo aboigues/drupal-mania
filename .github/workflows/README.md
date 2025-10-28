@@ -104,8 +104,10 @@ Ce workflow utilise [Trivy](https://github.com/aquasecurity/trivy) pour scanner 
 
 ### Images scannées
 
-- **postgres:15-alpine** - Base de données PostgreSQL
-- **drupal:10-apache** - Application Drupal
+- **postgres:17-alpine** - Base de données PostgreSQL
+- **drupal:11-apache** - Application Drupal
+- **docker.elastic.co/elasticsearch/elasticsearch:8.19.5** - Moteur de recherche Elasticsearch
+- **docker.elastic.co/kibana/kibana:8.19.5** - Interface de visualisation Kibana
 
 ### Déclencheurs
 
@@ -161,7 +163,11 @@ Si vous souhaitez personnaliser le comportement, vous pouvez ajouter ces secrets
 
 1. Aller dans l'onglet **Security** du repository
 2. Cliquer sur **Code scanning alerts**
-3. Filtrer par catégorie : `trivy-postgres` ou `trivy-drupal`
+3. Filtrer par catégorie :
+   - `trivy-postgres` : PostgreSQL
+   - `trivy-drupal` : Drupal
+   - `trivy-elasticsearch/elasticsearch` : Elasticsearch
+   - `trivy-kibana/kibana` : Kibana
 
 #### Via les Artifacts
 
@@ -170,8 +176,12 @@ Si vous souhaitez personnaliser le comportement, vous pouvez ajouter ces secrets
 3. Télécharger les artifacts :
    - `trivy-report-postgres` : Rapport texte pour PostgreSQL
    - `trivy-report-drupal` : Rapport texte pour Drupal
+   - `trivy-report-elasticsearch/elasticsearch` : Rapport texte pour Elasticsearch
+   - `trivy-report-kibana/kibana` : Rapport texte pour Kibana
    - `trivy-json-postgres` : Rapport JSON pour PostgreSQL
    - `trivy-json-drupal` : Rapport JSON pour Drupal
+   - `trivy-json-elasticsearch/elasticsearch` : Rapport JSON pour Elasticsearch
+   - `trivy-json-kibana/kibana` : Rapport JSON pour Kibana
 
 ### Que faire en cas de vulnérabilités ?
 
@@ -187,15 +197,26 @@ Pour exécuter Trivy localement avant de pusher :
 
 ```bash
 # Scanner l'image PostgreSQL
-docker pull postgres:15-alpine
-trivy image postgres:15-alpine
+docker pull postgres:17-alpine
+trivy image postgres:17-alpine
 
 # Scanner l'image Drupal
-docker pull drupal:10-apache
-trivy image drupal:10-apache
+docker pull drupal:11-apache
+trivy image drupal:11-apache
+
+# Scanner l'image Elasticsearch (registre Elastic)
+docker pull docker.elastic.co/elasticsearch/elasticsearch:8.19.5
+trivy image docker.elastic.co/elasticsearch/elasticsearch:8.19.5
+
+# Scanner l'image Kibana (registre Elastic)
+docker pull docker.elastic.co/kibana/kibana:8.19.5
+trivy image docker.elastic.co/kibana/kibana:8.19.5
 
 # Générer un rapport JSON
-trivy image --format json --output report.json postgres:15-alpine
+trivy image --format json --output report.json postgres:17-alpine
+
+# Scanner avec filtrage par sévérité
+trivy image --severity CRITICAL,HIGH docker.elastic.co/elasticsearch/elasticsearch:8.19.5
 ```
 
 ### Maintenance

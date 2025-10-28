@@ -21,11 +21,12 @@ services:
       retries: 5
 
   # Service Elasticsearch
-  # Updated to 8.19.7 to fix security vulnerabilities:
+  # Updated to 8.19.5 to fix security vulnerabilities:
   # - CVE-2025-37727 (CVSS 5.3): Information disclosure in audit logging
   # - CVE-2025-37728 (CVSS 5.4): CrowdStrike connector vulnerability
+  # Using official Elastic registry: docker.elastic.co
   elasticsearch:
-    image: elasticsearch:8.19.7
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.19.5
     container_name: drupal-elasticsearch
     restart: unless-stopped
     environment:
@@ -71,12 +72,13 @@ services:
              fluentd -c /fluentd/etc/fluent.conf"
 
   # Service Kibana
-  # Updated to 8.19.7 to fix security vulnerabilities:
+  # Updated to 8.19.5 to fix security vulnerabilities:
   # - CVE-2025-25009 (CVSS 8.7): XSS in case file upload functionality
   # - CVE-2025-25018 (CVSS 8.7): Stored XSS in Fleet/Integrations interface
   # - CVE-2025-25017 (CVSS 8.2): Vulnerability in Vega visualization engine
+  # Using official Elastic registry: docker.elastic.co
   kibana:
-    image: kibana:8.19.7
+    image: docker.elastic.co/kibana/kibana:8.19.5
     container_name: drupal-kibana
     restart: unless-stopped
     ports:

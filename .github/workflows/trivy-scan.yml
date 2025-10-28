@@ -35,21 +35,29 @@ jobs:
       matrix:
         image:
           - name: postgres
-            tag: 15-alpine
+            tag: 17-alpine
+            registry: ""
           - name: drupal
-            tag: 10-apache
+            tag: 11-apache
+            registry: ""
+          - name: elasticsearch/elasticsearch
+            tag: 8.19.5
+            registry: "docker.elastic.co/"
+          - name: kibana/kibana
+            tag: 8.19.5
+            registry: "docker.elastic.co/"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Pull Docker image
-        run: docker pull ${{ matrix.image.name }}:${{ matrix.image.tag }}
+        run: docker pull ${{ matrix.image.registry }}${{ matrix.image.name }}:${{ matrix.image.tag }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ matrix.image.name }}:${{ matrix.image.tag }}
+          image-ref: ${{ matrix.image.registry }}${{ matrix.image.name }}:${{ matrix.image.tag }}
           format: 'sarif'
           output: 'trivy-results-${{ matrix.image.name }}.sarif'
           severity: 'CRITICAL,HIGH,MEDIUM'
@@ -65,7 +73,7 @@ jobs:
       - name: Run Trivy vulnerability scanner (table format)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ matrix.image.name }}:${{ matrix.image.tag }}
+          image-ref: ${{ matrix.image.registry }}${{ matrix.image.name }}:${{ matrix.image.tag }}
           format: 'table'
           output: 'trivy-report-${{ matrix.image.name }}.txt'
           severity: 'CRITICAL,HIGH,MEDIUM,LOW'
@@ -81,7 +89,7 @@ jobs:
       - name: Run Trivy vulnerability scanner (JSON format)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ matrix.image.name }}:${{ matrix.image.tag }}
+          image-ref: ${{ matrix.image.registry }}${{ matrix.image.name }}:${{ matrix.image.tag }}
           format: 'json'
           output: 'trivy-results-${{ matrix.image.name }}.json'
           severity: 'CRITICAL,HIGH,MEDIUM,LOW'
