@@ -208,18 +208,33 @@ Les 5 vulnérabilités critiques/high suivantes ont été identifiées et corrig
    - **Impact** : Affecte les instances utilisant le connecteur CrowdStrike
    - **Correction** : Mise à jour Elasticsearch/Kibana 8.19.6 → 8.19.5
 
+#### Vulnérabilités Drupal Core (11.0.x → 11.2.5)
+
+6. **CVE-2024-55636** (CVSS 9.8) - **CRITIQUE**
+   - **Composant** : Drupal Core - Système de désérialisation
+   - **Type** : PHP Object Injection (Deserialization of Untrusted Data)
+   - **Impact** : Vulnérabilité d'injection d'objet PHP qui, si combinée avec une autre exploitation, pourrait conduire à une suppression arbitraire de fichiers. Cette vulnérabilité contient une chaîne de méthodes exploitable lorsqu'une vulnérabilité de désérialisation non sécurisée existe sur le site. Bien qu'elle ne soit pas directement exploitable (nécessite qu'un attaquant puisse passer des données non sûres à unserialize()), elle représente un vecteur potentiel pour l'exécution de code à distance.
+   - **Versions affectées** : Drupal Core 11.0.0 à 11.0.7
+   - **Correction** : Mise à jour drupal:11-apache → drupal:11.2-apache (version 11.2.5)
+   - **Date de publication** : 9 décembre 2024
+   - **Note** : Aucune exploitation connue dans le core Drupal, mais la correction est recommandée par précaution
+
 ### Autres composants analysés
 
 - **PostgreSQL 17-alpine** : ✅ Version à jour, pas de CVE critique
-- **Drupal 11-apache** : ✅ Version à jour, pas de CVE critique
+- **Drupal 11.2-apache** : ✅ Version 11.2.5 (corrige CVE-2024-55636)
 - **Fluentd v1.19-debian-2** : ✅ Aucun CVE critique identifié
 
 ### Références
 
 - [Elastic Security Update ESA-2025-18](https://discuss.elastic.co/t/elasticsearch-8-18-8-8-19-5-9-0-8-9-1-5-security-update-esa-2025-18/382453)
 - [Elastic Security Update ESA-2025-20](https://discuss.elastic.co/t/kibana-8-18-8-8-19-5-9-0-8-and-9-1-5-security-update-esa-2025-20/382449)
-- Versions patchées officielles : 8.18.8, 8.19.5, 9.0.8, 9.1.5
-- Registre Docker officiel : docker.elastic.co
+- [Drupal Security Advisory SA-CORE-2024-006](https://www.drupal.org/sa-core-2024-006) - CVE-2024-55636
+- [CVE-2024-55636 Details](https://nvd.nist.gov/vuln/detail/CVE-2024-55636)
+- Versions patchées Elasticsearch/Kibana : 8.18.8, 8.19.5, 9.0.8, 9.1.5
+- Versions patchées Drupal : 10.2.11, 10.3.9, 11.0.8, 11.1.x, 11.2.5
+- Registre Docker officiel Elastic : docker.elastic.co
+- Registre Docker officiel Drupal : Docker Hub (_/drupal)
 
 ### Prochaines étapes de sécurité
 
